@@ -47,7 +47,7 @@ class LMDBImageDataset(Dataset):
 
 
 # ===========================
-# Augmentaciones según el artículo
+# Transformaciones para el modelo
 # ===========================
 IMG_SIZE = 224
 
@@ -68,7 +68,7 @@ val_transform = T.Compose([
 
 
 # ===========================
-# Modelo EfficientNetV2-B0
+# Modelo EfficientNetV2
 # ===========================
 def create_model():
     print("Creando modelo")
@@ -139,7 +139,7 @@ def validate(model, loader, criterion, device):
 # MAIN
 # ===========================
 def main():
-    lmdb_path = "xai_test_data_1fps.lmdb"  # <-- Ajusta si está en otro path
+    lmdb_path = "xai_test_data_1fps.lmdb"  # Arcjivo LMDB
 
     dataset = LMDBImageDataset(lmdb_path, transform=train_transform)
 
