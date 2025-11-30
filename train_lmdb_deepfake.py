@@ -168,6 +168,12 @@ def main():
     scaler = torch.cuda.amp.GradScaler()
 
     best_val_acc = 0
+
+    # Early stopping params (ajustables)
+    min_delta = 1e-4   # mejora mínima absoluta para ser considerada "significativa"
+    patience = 5       # épocas consecutivas sin mejora significativa antes de parar
+    no_improve_epochs = 0
+
     print("Iniciando epocas")
     for epoch in range(30):
         print(f"\n===== Epoch {epoch+1}/30 =====")
@@ -180,13 +186,23 @@ def main():
 
         torch.save(model.state_dict(), f"model_epoch_{epoch+1}.pth")
 
-        if val_acc > best_val_acc:
+        # Early stopping logic basada en mejora de val_acc
+        if val_acc > best_val_acc + min_delta:
             best_val_acc = val_acc
             torch.save(model.state_dict(), "best_model.pth")
+            no_improve_epochs = 0
+            print(f"--> Nueva mejor precisión de validación: {best_val_acc:.4f}")
+        else:
+            no_improve_epochs += 1
+            print(f"--> No hubo mejora significativa ({no_improve_epochs}/{patience})")
+
+        # Detener si no hay mejora significativa durante 'patience' épocas
+        if no_improve_epochs >= patience:
+            print(f"\nDeteniendo entrenamiento por early stopping. No hubo mejora significativa en {patience} épocas.")
+            break
 
     print(f"\nEntrenamiento finalizado. Mejor val_acc = {best_val_acc:.4f}")
 
 
 if __name__ == "__main__":
     main()
-
