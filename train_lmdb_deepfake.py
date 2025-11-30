@@ -76,7 +76,7 @@ def create_model():
         "efficientnetv2_rw_m.agc_in1k",
         pretrained=True,
         num_classes=5,
-        drop_path_rate=0.4  # según el paper
+        drop_path_rate=0.4  
     )
     return model
 
